@@ -2,7 +2,7 @@ import azure.functions as func
 import datetime
 import json
 import logging
-
+from services import generate_pdf, upload_pdf
 from models.invoice import Invoice
 from pydantic import ValidationError
 
@@ -29,6 +29,9 @@ def invoices(req: func.HttpRequest) -> func.HttpResponse:
     try:
         req_body = req.get_json()
         invoice = Invoice.model_validate(req_body)
+        pdf_buffer = generate_pdf(invoice=invoice)
+
+        url = upload_pdf(pdf_buffer, f'{invoice.invoice_id}.pdf')
 
     except ValidationError as e:
         errors = []
@@ -52,7 +55,7 @@ def invoices(req: func.HttpRequest) -> func.HttpResponse:
     output = {
         'invoice_id': invoice.invoice_id,
         'invoice_date': invoice.invoice_date,
-        'invoice_url': ''
+        'invoice_url': url
     }
 
     return func.HttpResponse(
