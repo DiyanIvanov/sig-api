@@ -8,6 +8,7 @@ from pydantic import ValidationError
 
 app = func.FunctionApp(http_auth_level=func.AuthLevel.ANONYMOUS)
 
+@app.function_name('health')
 @app.route(route='health', methods=['GET'])
 def health(req: func.HttpRequest) -> func.HttpResponse:
     res = {
