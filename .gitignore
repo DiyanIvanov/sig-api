@@ -22,7 +22,7 @@ project.lock.json
 /data
 .secrets
 appsettings.json
-local.settings.json
+apps/sig-api/local.settings.json
 
 node_modules
 dist
