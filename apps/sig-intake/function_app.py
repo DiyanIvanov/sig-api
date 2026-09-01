@@ -9,7 +9,7 @@ from services import csv_to_dict
 app = func.FunctionApp(http_auth_level=func.AuthLevel.FUNCTION)
 
 @app.function_name('health')
-@app.route(route='/health', methods=['GET'])
+@app.route(route='health/', methods=['GET'])
 def health(req: func.HttpRequest) -> func.HttpResponse:
     res = {
         'status': 'ok',
@@ -21,7 +21,7 @@ def health(req: func.HttpRequest) -> func.HttpResponse:
 
 
 @app.function_name('generate_invoices')
-@app.route(route='/generate_invoices', methods=['POST'])
+@app.route(route='generate_invoices/', methods=['POST'])
 def generate_invoices(req: func.HttpRequest) -> func.HttpResponse:
     try:
         data = req.files['file']
