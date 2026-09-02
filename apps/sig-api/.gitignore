@@ -22,7 +22,7 @@ project.lock.json
 /data
 .secrets
 appsettings.json
-apps/sig-api/local.settings.json
+local.settings.json
 
 node_modules
 dist
@@ -50,7 +50,3 @@ __queuestorage__
 __tablestorage__
 __azurite_db*__.json
 AzuriteConfig
-
-.idea
-.vscode
-.tmp
