@@ -10,7 +10,7 @@ on:
   workflow_dispatch:
 
 env:
-  AZURE_FUNCTIONAPP_PACKAGE_PATH: '.apps/sig-intake'
+  AZURE_FUNCTIONAPP_PACKAGE_PATH: './apps/sig-intake'
   PYTHON_VERSION: '3.14'
 
 jobs:
