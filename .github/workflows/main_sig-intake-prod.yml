@@ -8,14 +8,11 @@ on:
   push:
     branches:
       - main
-    paths:
-      - 'apps/sig-intake/**'
-      - '.github/workflows/deploy-sig-intake.yml'
   workflow_dispatch:
 
 env:
-  AZURE_FUNCTIONAPP_PACKAGE_PATH: 'apps/sig-intake'
-  PYTHON_VERSION: '3.14'
+  AZURE_FUNCTIONAPP_PACKAGE_PATH: '.' # set this to the path to your web app project, defaults to the repository root
+  PYTHON_VERSION: '3.14' # set this to the python version to use (supports 3.6, 3.7, 3.8)
 
 jobs:
   build:
@@ -38,13 +35,11 @@ jobs:
           source venv/bin/activate
 
       - name: Install dependencies
-        working-directory: ${{ env.AZURE_FUNCTIONAPP_PACKAGE_PATH }}
         run: pip install -r requirements.txt
 
       # Optional: Add step to run tests here
 
       - name: Zip artifact for deployment
-        working-directory: ${{ env.AZURE_FUNCTIONAPP_PACKAGE_PATH }}
         run: zip release.zip ./* -r
 
       - name: Upload artifact for deployment job
@@ -87,4 +82,4 @@ jobs:
           app-name: 'sig-intake-prod'
           slot-name: 'Production'
           package: ${{ env.AZURE_FUNCTIONAPP_PACKAGE_PATH }}
-          remote-build: true
+          
