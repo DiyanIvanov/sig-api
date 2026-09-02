@@ -78,6 +78,5 @@ jobs:
         id: deploy-to-function
         with:
           app-name: 'sig-intake-prod'
-          slot-name: 'Production'
-          package: ${{ env.AZURE_FUNCTIONAPP_PACKAGE_PATH }}
+          package: '.'
           remote-build: true
