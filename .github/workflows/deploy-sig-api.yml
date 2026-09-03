@@ -39,7 +39,9 @@ jobs:
 
       - name: Install dependencies
         working-directory: ${{ env.AZURE_FUNCTIONAPP_PACKAGE_PATH }}
-        run: pip install -r requirements.txt
+        run: |
+          pip install -r requirements.txt
+    
 
       # Optional: Add step to run tests here
 
@@ -61,6 +63,7 @@ jobs:
     permissions:
       id-token: write #This is required for requesting the JWT
       contents: read #This is required for actions/checkout
+      actions: read
 
     steps:
       - name: Download artifact from build job
