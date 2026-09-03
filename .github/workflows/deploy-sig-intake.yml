@@ -48,9 +48,7 @@ jobs:
         uses: actions/upload-artifact@v4
         with:
           name: python-app
-          path: |
-            release.zip
-            !venv/
+          path: ${{ env.AZURE_FUNCTIONAPP_PACKAGE_PATH }}/release.zip
 
   deploy:
     runs-on: ubuntu-latest
@@ -73,9 +71,9 @@ jobs:
       - name: Login to Azure
         uses: azure/login@v2
         with:
-          client-id: ${{ secrets.AZUREAPPSERVICE_CLIENTID_B69B71A0C46C4EE0BD1F4B9FD44D7D82 }}
-          tenant-id: ${{ secrets.AZUREAPPSERVICE_TENANTID_7162193D5B48471D8D3DF6F64BCE730C }}
-          subscription-id: ${{ secrets.AZUREAPPSERVICE_SUBSCRIPTIONID_B05EBC3D14FA485D9919767ECD849088 }}
+          client-id: ${{ secrets.AZUREAPPSERVICE_CLIENTID_A26792C710B54A7CB230424E8FA0F36E }}
+          tenant-id: ${{ secrets.AZUREAPPSERVICE_TENANTID_5195FFCBC8C046EE8F73763E281FD1ED }}
+          subscription-id: ${{ secrets.AZUREAPPSERVICE_SUBSCRIPTIONID_C87FBBBBF5874862A8F40FF2D03C05C4 }}
 
       - name: 'Deploy to Azure Functions'
         uses: Azure/functions-action@v1
