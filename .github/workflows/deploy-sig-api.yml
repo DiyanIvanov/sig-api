@@ -86,7 +86,7 @@ jobs:
         id: deploy-to-function
         with:
           app-name: 'sig-api-prod'
-          slot-name: '.'
-          package: ${{ env.AZURE_FUNCTIONAPP_PACKAGE_PATH }}
+          slot-name: 'Production'
+          package: '.'
           remote-build: true
           
