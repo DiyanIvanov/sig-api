@@ -5,6 +5,8 @@ import logging
 from exceptions import CSVParseError, CSVValidationError
 from models import Invoice
 from services import csv_to_dict
+from pydantic import TypeAdapter
+from typing import List
 
 app = func.FunctionApp(http_auth_level=func.AuthLevel.FUNCTION)
 
@@ -41,6 +43,11 @@ def generate_invoices(req: func.HttpRequest) -> func.HttpResponse:
             mimetype='application/json'
         )
 
-    invoice = Invoice.model_validate(res)
+    adapter = TypeAdapter(List[Invoice])
+    invoices = adapter.validate_python(res)
 
-    return func.HttpResponse(json.dumps(invoice.dict()), mimetype='application/json', status_code=200)
+    return func.HttpResponse(
+        json.dumps([invoice.dict() for invoice in invoices]),
+        mimetype='application/json',
+        status_code=200
+    )
