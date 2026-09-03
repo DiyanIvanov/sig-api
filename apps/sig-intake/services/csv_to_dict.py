@@ -35,7 +35,7 @@ def csv_to_dict(csv_file):
     if errors:
         raise CSVValidationError(errors)
 
-    res = {}
+    res = []
     for (customer, invoice_id, invoice_date), group in df.groupby(['customer', 'invoice_id', 'invoice_date']):
         tmp = {
             'customer': customer,
@@ -44,7 +44,7 @@ def csv_to_dict(csv_file):
             'products': group[['name', 'price', 'quantity']].to_dict(orient='records')
         }
 
-        res.update(tmp)
+        res.append(tmp)
 
     return res
 
