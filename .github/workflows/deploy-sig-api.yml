@@ -87,6 +87,6 @@ jobs:
         with:
           app-name: 'sig-api-prod'
           slot-name: '.'
-          package: ${{ env.AZURE_FUNCTIONAPP_PACKAGE_PATH }}
+          package: '.'
           remote-build: true
           
