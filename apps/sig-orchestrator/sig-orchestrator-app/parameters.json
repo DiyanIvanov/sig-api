@@ -1,0 +1,10 @@
+{
+  "sigIntakeUrl": {
+    "type": "string",
+    "value": "@appsetting('SIG_INTAKE_URL')"
+  },
+  "sigApiUrl": {
+    "type": "string",
+    "value": "@appsetting('SIG_API_URL')"
+  }
+}
