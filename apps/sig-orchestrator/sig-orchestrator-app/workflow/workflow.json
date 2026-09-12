@@ -1,0 +1,161 @@
+{
+    "definition": {
+        "$schema": "https://schema.management.azure.com/providers/Microsoft.Logic/schemas/2016-06-01/workflowdefinition.json#",
+        "contentVersion": "1.0.0.0",
+        "actions": {
+            "get_csv": {
+                "type": "Compose",
+                "inputs": "@triggerBody()",
+                "runAfter": {}
+            },
+            "Sig_Intake": {
+                "type": "Http",
+                "inputs": {
+                    "uri": "@parameters('sigIntakeUrl')",
+                    "method": "POST",
+                    "headers": {
+                        "x-functions-key": "@{appsetting('MyFunctionKey')}"
+                    },
+                    "body": "@triggerBody()"
+                },
+                "runAfter": {
+                    "get_csv": [
+                        "SUCCEEDED"
+                    ]
+                },
+                "runtimeConfiguration": {
+                    "contentTransfer": {
+                        "transferMode": "Chunked"
+                    },
+                    "secureData": {
+                        "properties": [
+                            "inputs"
+                        ]
+                    }
+                }
+            },
+            "For_each": {
+                "type": "Foreach",
+                "foreach": "@body('Invoices_Data')",
+                "actions": {
+                    "Generate_Invoice": {
+                        "type": "Http",
+                        "inputs": {
+                            "uri": "@parameters('sigApiUrl')",
+                            "method": "POST",
+                            "body": "@items('For_each')"
+                        },
+                        "runtimeConfiguration": {
+                            "contentTransfer": {
+                                "transferMode": "Chunked"
+                            }
+                        }
+                    },
+                    "Parse_JSON": {
+                        "type": "ParseJson",
+                        "inputs": {
+                            "content": "@body('Generate_Invoice')",
+                            "schema": {
+                                "type": "object",
+                                "properties": {
+                                    "invoice_id": {
+                                        "type": "integer"
+                                    },
+                                    "invoice_date": {
+                                        "type": "string"
+                                    },
+                                    "invoice_url": {
+                                        "type": "string"
+                                    }
+                                }
+                            }
+                        },
+                        "runAfter": {
+                            "Generate_Invoice": [
+                                "SUCCEEDED"
+                            ]
+                        }
+                    }
+                },
+                "runAfter": {
+                    "Invoices_Data": [
+                        "SUCCEEDED"
+                    ]
+                }
+            },
+            "Invoices_Data": {
+                "type": "ParseJson",
+                "inputs": {
+                    "content": "@body('Sig_Intake')",
+                    "schema": {
+                        "type": "array",
+                        "items": {
+                            "type": "object",
+                            "properties": {
+                                "invoice_id": {
+                                    "type": "integer"
+                                },
+                                "invoice_date": {
+                                    "type": "string"
+                                },
+                                "customer": {
+                                    "type": "string"
+                                },
+                                "products": {
+                                    "type": "array",
+                                    "items": {
+                                        "type": "object",
+                                        "properties": {
+                                            "name": {
+                                                "type": "string"
+                                            },
+                                            "price": {
+                                                "type": "number"
+                                            },
+                                            "quantity": {
+                                                "type": "integer"
+                                            }
+                                        },
+                                        "required": [
+                                            "name",
+                                            "price",
+                                            "quantity"
+                                        ]
+                                    }
+                                }
+                            },
+                            "required": [
+                                "invoice_id",
+                                "invoice_date",
+                                "customer",
+                                "products"
+                            ]
+                        }
+                    }
+                },
+                "runAfter": {
+                    "Sig_Intake": [
+                        "SUCCEEDED"
+                    ]
+                }
+            }
+        },
+        "outputs": {},
+        "triggers": {
+            "When_an_HTTP_request_is_received": {
+                "type": "Request",
+                "kind": "Http",
+                "inputs": {
+                    "method": "POST"
+                },
+                "conditions": [],
+                "runtimeConfiguration": {
+                    "concurrency": {
+                        "runs": 20
+                    }
+                }
+            }
+        }
+    },
+    "kind": "Stateful"
+}
